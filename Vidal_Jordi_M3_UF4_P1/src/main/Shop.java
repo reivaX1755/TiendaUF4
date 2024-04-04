@@ -1,6 +1,7 @@
 package main;
 
 import model.Amount;
+import model.Employee;
 import model.Product;
 import model.Sale;
 
@@ -26,12 +27,14 @@ public class Shop {
         cash = new Amount(0.0);
         inventory = new ArrayList<>();
         sales = new ArrayList<>();
+        Employee paco = new Employee("Paco", 1);
     }
     public String getCash() {
         return cash.toString();
     }
 	public static void main(String[] args){
 		Shop shop = new Shop();
+		shop.initSession();
 		shop.loadInventory();
 		Scanner scanner = new Scanner(System.in);
 		int opcion = 0;
@@ -88,6 +91,18 @@ public class Shop {
 			}
 
 		} while (!exit);
+	}
+	private void initSession() {
+		boolean logged = false;
+		do {
+			Scanner scanner = new Scanner(System.in);
+	        System.out.print("Introduzca numero de empleado: ");
+	        int user = scanner.nextInt();
+	        scanner.nextLine(); 
+	        System.out.print("Introduzca contraseña: ");
+	        String employeePass = scanner.nextLine();
+	        logged = Employee.login(user, employeePass);
+		}while(!logged);
 	}
 	public void loadInventory() {
 		try {
