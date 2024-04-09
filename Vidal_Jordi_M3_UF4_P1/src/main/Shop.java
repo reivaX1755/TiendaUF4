@@ -1,6 +1,7 @@
 package main;
 
 import model.Amount;
+import model.Client;
 import model.Employee;
 import model.Product;
 import model.Sale;
@@ -231,6 +232,8 @@ public class Shop {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.println("Realizar venta, escribir nombre cliente");
 	    String client = scanner.nextLine();
+	    cash.setValue(50.0);
+	    Client cliente = new Client(client);
 	    Amount totalAmount = new Amount(0.0);
 	    String name = "";
 	    ArrayList<String> productosVendidos = new ArrayList<>();
@@ -263,12 +266,32 @@ public class Shop {
 	    totalAmount.setValue(totalAmount.getValue() / 2);
 	    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
 	    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
+	    boolean Payable = false;
+	    Payable = pay(totalAmount, cliente);
+	    if(Payable == true) {		
+	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+	    	Math.round((newBalance * 100.00) / 100.00);
+	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+newBalance+"€");
+	    	/*Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta*///cliente.setBalance(totalAmount);
+	    }else {
+	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+	    	Math.round((newBalance * 100.00) / 100.00);
+	    	System.out.println("El cliente llamado: "+client+ ", necesita "+(newBalance*-1)+"€ mas para poder pagar");
+	    	/*Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta*///cliente.setBalance(totalAmount);
+	    }
 	    long currentTime = System.currentTimeMillis();
 	    Date fechaHoraActual = new Date(currentTime);
 		Sale sale = new Sale(client, productosVendidos, totalAmount, fechaHoraActual); 
 	    cash.setValue(cash.getValue() + totalAmount.getValue());        
 	    System.out.println("Venta final: " + sale.toString());
 	    sales.add(sale);
+	}
+	public static boolean pay(Amount totalAmount, Client cliente) {
+		boolean Payable = false;
+		if(cliente.getBalance().getValue() - totalAmount.getValue() > 0) {
+			Payable = true;
+		}
+		return Payable;
 	}
 	private void showSales() {
 		Scanner scanner = new Scanner(System.in);
