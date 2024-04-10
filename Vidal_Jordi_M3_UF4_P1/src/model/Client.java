@@ -28,4 +28,12 @@ public class Client extends Person{
 	public void setBalance(Amount balance) {
 		this.balance = balance;
 	}
+	
+	public static boolean pay(Amount totalAmount, Client cliente) {
+		boolean Payable = false;
+		if(cliente.getBalance().getValue() - totalAmount.getValue() > 0) {
+			Payable = true;
+		}
+		return Payable;
+	}
 }

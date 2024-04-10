@@ -28,10 +28,6 @@ public class Shop {
         cash = new Amount(0.0);
         inventory = new ArrayList<>();
         sales = new ArrayList<>();
-        Employee paco = new Employee("Paco", 1);
-    }
-    public String getCash() {
-        return cash.toString();
     }
 	public static void main(String[] args){
 		Shop shop = new Shop();
@@ -134,7 +130,7 @@ public class Shop {
 		}
 	}
 	private void showCash() {
-		System.out.print("\nDinero actual: "+Math.round(cash.getValue() * 100.00) / 100.00+"€");//Redondeando a 2 decimales
+		System.out.print("\nDinero actual: "+(Math.round(cash.getValue() * 100.00) / 100.00)+"€");//Redondeando a 2 decimales
 	}
 	private void countAmountSales() {
 		System.out.println("\nSuma de dinero durante las ventas:");
@@ -214,25 +210,26 @@ public class Shop {
 		Scanner scanner = new Scanner(System.in);
 	    System.out.print("Introduce el nombre del producto que quieres eliminar del inventario: ");
 	    String deleteProduct = scanner.nextLine();
+	    boolean existe = false;
 	    for (int i = 0; i < inventory.size(); i++) {
 	    	Product product = inventory.get(i);
 	    	if (product != null) {
 				if(product.getName().equalsIgnoreCase(deleteProduct)) {
 					inventory.remove(i);
 					System.out.println("Producto con nombre "+deleteProduct+" ha sido eliminado con exito!");
-					break;
-				}else {
-					System.out.println("No se puede eliminar el producto  "+deleteProduct+" porque no existe");
+					existe = true;
 					break;
 				}
 			}
+	    }
+	    if(!existe) {
+	    	System.out.println("No se puede eliminar el producto "+deleteProduct+" porque no existe");
 	    }
 	}
 	public void sale() {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.println("Realizar venta, escribir nombre cliente");
 	    String client = scanner.nextLine();
-	    cash.setValue(50.0);
 	    Client cliente = new Client(client);
 	    Amount totalAmount = new Amount(0.0);
 	    String name = "";
@@ -267,31 +264,24 @@ public class Shop {
 	    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
 	    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
 	    boolean Payable = false;
-	    Payable = pay(totalAmount, cliente);
-	    if(Payable == true) {		
-	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	Math.round((newBalance * 100.00) / 100.00);
-	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+newBalance+"€");
-	    	/*Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta*///cliente.setBalance(totalAmount);
-	    }else {
-	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	Math.round((newBalance * 100.00) / 100.00);
-	    	System.out.println("El cliente llamado: "+client+ ", necesita "+(newBalance*-1)+"€ mas para poder pagar");
-	    	/*Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta*///cliente.setBalance(totalAmount);
-	    }
+	    Payable = Client.pay(totalAmount, cliente);
 	    long currentTime = System.currentTimeMillis();
 	    Date fechaHoraActual = new Date(currentTime);
 		Sale sale = new Sale(client, productosVendidos, totalAmount, fechaHoraActual); 
 	    cash.setValue(cash.getValue() + totalAmount.getValue());        
 	    System.out.println("Venta final: " + sale.toString());
+	    if(Payable == true) {		
+	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+	    	Math.round((newBalance * 100.00) / 100.00);
+	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+newBalance+"€");
+	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
+	    }else {
+	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+	    	Math.round((newBalance * 100.00) / 100.00);
+	    	System.out.println("El cliente llamado: "+client+ ", tiene un balance de "+(newBalance)+"€");
+	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
+	    }
 	    sales.add(sale);
-	}
-	public static boolean pay(Amount totalAmount, Client cliente) {
-		boolean Payable = false;
-		if(cliente.getBalance().getValue() - totalAmount.getValue() > 0) {
-			Payable = true;
-		}
-		return Payable;
 	}
 	private void showSales() {
 		Scanner scanner = new Scanner(System.in);

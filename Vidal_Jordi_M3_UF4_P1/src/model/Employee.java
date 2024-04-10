@@ -18,12 +18,10 @@ public class Employee extends Person{
 	}
 	
 	public static boolean login(int user, String employeePass) {
-		boolean exit = false;
 		boolean isLogged = false;
 		if (user == USER && employeePass.equals(PASSWORD)) {
 			System.out.println("Login correcto!");
 			isLogged = true;
-			exit = true;
 		} else {
 			System.out.println("Error durante el login!");
 
