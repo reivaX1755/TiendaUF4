@@ -272,13 +272,13 @@ public class Shop {
 	    System.out.println("Venta final: " + sale.toString());
 	    if(Payable == true) {		
 	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	Math.round((newBalance * 100.00) / 100.00);
-	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+newBalance+"€");
+	    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+roundedBalance+"€");
 	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
 	    }else {
 	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	Math.round((newBalance * 100.00) / 100.00);
-	    	System.out.println("El cliente llamado: "+client+ ", tiene un balance de "+(newBalance)+"€");
+	    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+	    	System.out.println("El cliente llamado: "+client+ ", tiene un balance de "+roundedBalance+"€");
 	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
 	    }
 	    sales.add(sale);
