@@ -227,9 +227,6 @@ public class Shop {
 	    	System.out.println("No se puede eliminar el producto "+deleteProduct+" porque no existe");
 	    }
 	}
-	public void createsale() {
-		
-	}
 	public void sale() {
 	    Scanner scanner = new Scanner(System.in);
 	    System.out.println("El cliente es premium?	[Y / Else for No]");
