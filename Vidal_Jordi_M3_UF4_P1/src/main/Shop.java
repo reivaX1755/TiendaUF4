@@ -3,6 +3,7 @@ package main;
 import model.Amount;
 import model.Client;
 import model.Employee;
+import model.PremiumClient;
 import model.Product;
 import model.Sale;
 
@@ -226,62 +227,124 @@ public class Shop {
 	    	System.out.println("No se puede eliminar el producto "+deleteProduct+" porque no existe");
 	    }
 	}
+	public void createsale() {
+		
+	}
 	public void sale() {
 	    Scanner scanner = new Scanner(System.in);
-	    System.out.println("Realizar venta, escribir nombre cliente");
-	    String client = scanner.nextLine();
-	    Client cliente = new Client(client);
-	    Amount totalAmount = new Amount(0.0);
-	    String name = "";
-	    ArrayList<String> productosVendidos = new ArrayList<>();
-	    int numVentas = 0;
-	    while (!name.equals("0")) {
-	        System.out.println("Introduce el nombre del producto, escribir 0 para terminar:");
-	        name = scanner.nextLine();
-	        if (name.equalsIgnoreCase("0")) {
-	            System.out.println("Venta finalizada");
-	            break;
-	        }
-	        Product product = findProduct(name);
-	        boolean productAvailable = false;
-	        if (product != null && product.isAvailable()) {
-	            productAvailable = true;
-	            totalAmount.setValue(totalAmount.getValue() + product.getPublicPrice());  
-	            product.setStock(product.getStock() - 1);
-	            if (product.getStock() == 0) {
-	                product.setAvailable(false);
-	            }
-	            System.out.println("Se ha vendido 1 unidad de " + name);
-	        }
-	        if (productAvailable) {
-	            productosVendidos.add(name);
-	            numVentas = (numVentas +1);	//Aqui poner numVentas++ da warning de que "int numVentas is never used, asi que lo pongo asi para que no salga el warning"
-	        } else {
-	            System.out.println("Producto no encontrado o sin stock");
-	        }
-	    }
-	    totalAmount.setValue(totalAmount.getValue() / 2);
-	    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
-	    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
-	    boolean Payable = false;
-	    Payable = Client.pay(totalAmount, cliente);
-	    long currentTime = System.currentTimeMillis();
-	    Date fechaHoraActual = new Date(currentTime);
-		Sale sale = new Sale(client, productosVendidos, totalAmount, fechaHoraActual); 
-	    cash.setValue(cash.getValue() + totalAmount.getValue());        
-	    System.out.println("Venta final: " + sale.toString());
-	    if(Payable == true) {		
-	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
-	    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+roundedBalance+"€");
-	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
+	    System.out.println("El cliente es premium?	[Y / Else for No]");
+	    String isPremium = scanner.nextLine();
+	    if(isPremium.equalsIgnoreCase("Y")) {
+			System.out.println("Realizar venta, escribir nombre cliente premium");
+		    String namePremiumClient = scanner.nextLine();
+		    PremiumClient clientePremium = new PremiumClient(namePremiumClient, 0);
+		    Amount totalAmount = new Amount(0.0);
+		    String name = "";
+		    ArrayList<String> productosVendidos = new ArrayList<>();
+		    int numVentas = 0;
+		    while (!name.equals("0")) {
+		        System.out.println("Introduce el nombre del producto, escribir 0 para terminar:");
+		        name = scanner.nextLine();
+		        if (name.equalsIgnoreCase("0")) {
+		            System.out.println("Venta finalizada");
+		            break;
+		        }
+		        Product product = findProduct(name);
+		        boolean productAvailable = false;
+		        if (product != null && product.isAvailable()) {
+		            productAvailable = true;
+		            totalAmount.setValue(totalAmount.getValue() + product.getPublicPrice());  
+		            product.setStock(product.getStock() - 1);
+		            if (product.getStock() == 0) {
+		                product.setAvailable(false);
+		            }
+		            System.out.println("Se ha vendido 1 unidad de " + name);
+		        }
+		        if (productAvailable) {
+		            productosVendidos.add(name);
+		            numVentas = (numVentas +1);
+		        } else {
+		            System.out.println("Producto no encontrado o sin stock");
+		        }
+		    }
+		    totalAmount.setValue(totalAmount.getValue() / 2);
+		    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
+		    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
+		    boolean Payable = false;
+		    double points = (totalAmount.getValue() /10);
+		    int finalPoints = (int) points;
+		    Payable = PremiumClient.payP(totalAmount, clientePremium);
+		    long currentTime = System.currentTimeMillis();
+		    Date fechaHoraActual = new Date(currentTime);
+			Sale sale = new Sale(namePremiumClient, productosVendidos, totalAmount, fechaHoraActual); 
+		    cash.setValue(cash.getValue() + totalAmount.getValue());        
+		    System.out.println("Venta final: " + sale.toString());
+		    if(Payable == true) {		
+		    	double newBalance = (clientePremium.getBalance().getValue() - totalAmount.getValue());
+		    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+		    	System.out.println("El cliente premium llamado: "+namePremiumClient+ ", puede pagar y le sobra: "+roundedBalance+"€");
+		    	System.out.println("El cliente premium llamado: "+namePremiumClient+ " obtiene "+finalPoints+" puntos!");
+		    }else {
+		    	double newBalance = (clientePremium.getBalance().getValue() - totalAmount.getValue());
+		    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+		    	System.out.println("El cliente premium llamado: "+namePremiumClient+ ", tiene un balance de "+roundedBalance+"€");
+		    	System.out.println("El cliente premium llamado: "+namePremiumClient+ " obtiene "+finalPoints+" puntos!");
+		    }
+		    sales.add(sale);
 	    }else {
-	    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
-	    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
-	    	System.out.println("El cliente llamado: "+client+ ", tiene un balance de "+roundedBalance+"€");
-	    	//cliente.setBalance(totalAmount);	Restar el balance es irrevelante por como se plantea el ejercicio reseteas el balance del cliente cada vez que haces una venta
+	    	System.out.println("Realizar venta, escribir nombre cliente");
+		    String client = scanner.nextLine();
+		    Client cliente = new Client(client);
+		    Amount totalAmount = new Amount(0.0);
+		    String name = "";
+		    ArrayList<String> productosVendidos = new ArrayList<>();
+		    int numVentas = 0;
+		    while (!name.equals("0")) {
+		        System.out.println("Introduce el nombre del producto, escribir 0 para terminar:");
+		        name = scanner.nextLine();
+		        if (name.equalsIgnoreCase("0")) {
+		            System.out.println("Venta finalizada");
+		            break;
+		        }
+		        Product product = findProduct(name);
+		        boolean productAvailable = false;
+		        if (product != null && product.isAvailable()) {
+		            productAvailable = true;
+		            totalAmount.setValue(totalAmount.getValue() + product.getPublicPrice());  
+		            product.setStock(product.getStock() - 1);
+		            if (product.getStock() == 0) {
+		                product.setAvailable(false);
+		            }
+		            System.out.println("Se ha vendido 1 unidad de " + name);
+		        }
+		        if (productAvailable) {
+		            productosVendidos.add(name);
+		            numVentas = (numVentas +1);	
+		        } else {
+		            System.out.println("Producto no encontrado o sin stock");
+		        }
+		    }
+		    totalAmount.setValue(totalAmount.getValue() / 2);
+		    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
+		    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
+		    boolean Payable = false;
+		    Payable = Client.pay(totalAmount, cliente);
+		    long currentTime = System.currentTimeMillis();
+		    Date fechaHoraActual = new Date(currentTime);
+			Sale sale = new Sale(client, productosVendidos, totalAmount, fechaHoraActual); 
+		    cash.setValue(cash.getValue() + totalAmount.getValue());        
+		    System.out.println("Venta final: " + sale.toString());
+		    if(Payable == true) {		
+		    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+		    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+		    	System.out.println("El cliente llamado: "+client+ ", puede pagar y le sobra: "+roundedBalance+"€");
+		    }else {
+		    	double newBalance = (cliente.getBalance().getValue() - totalAmount.getValue());
+		    	double roundedBalance = Math.round(newBalance * 100.00) / 100.00;
+		    	System.out.println("El cliente llamado: "+client+ ", tiene un balance de "+roundedBalance+"€");
+		    }
+		    sales.add(sale);
 	    }
-	    sales.add(sale);
 	}
 	private void showSales() {
 		Scanner scanner = new Scanner(System.in);
