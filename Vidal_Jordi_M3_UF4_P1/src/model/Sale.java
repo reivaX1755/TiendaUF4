@@ -5,12 +5,12 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 public class Sale {
-    String client;
+    Client client;
     ArrayList<String> products;
     Amount amount;
     Date fechaActual;
     
-    public Sale(String client, ArrayList<String> products, Amount amount, Date fechaActual) {
+    public Sale(Client client, ArrayList<String> products, Amount amount, Date fechaActual) {
         super();
         this.client = client;
         this.products = products;
@@ -26,11 +26,11 @@ public class Sale {
 		this.fechaActual = fechaActual;
 	}
 
-	public String getClient() {
+	public Client getClient() {
         return client;
     }
 
-    public void setClient(String client) {
+    public void setClient(Client client) {
         this.client = client;
     }
 
@@ -54,7 +54,7 @@ public class Sale {
 	public String toString() {
 		SimpleDateFormat formato = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
         String fechaFormateada = formato.format(fechaActual);
-		return "Sale // Cliente = " + client + ", Productos Vendidos = " + products + " Total Venta = " + amount + ", Fecha venta = "
+		return "Sale // Cliente = " + client.getName() + ", Productos Vendidos = " + products + " Total Venta = " + amount + ", Fecha venta = "
 				+ fechaFormateada;
 	}
 }

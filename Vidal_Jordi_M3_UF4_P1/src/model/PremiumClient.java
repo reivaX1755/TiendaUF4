@@ -17,7 +17,7 @@ public class PremiumClient extends Client{
 		this.points = points;
 	}
 	
-	public static boolean payP(Amount totalAmount, PremiumClient clientePremium) {
+	public static boolean pay(Amount totalAmount, PremiumClient clientePremium) {
 		boolean Payable = false;
 		if(clientePremium.getBalance().getValue() - totalAmount.getValue() > 0) {
 			Payable = true;

@@ -91,16 +91,23 @@ public class Shop {
 		} while (!exit);
 	}
 	private void initSession() {
-		boolean logged = false;
-		do {
-			Scanner scanner = new Scanner(System.in);
+	    boolean logged = false;
+	    Scanner scanner = new Scanner(System.in);
+	    do {
 	        System.out.print("Introduzca numero de empleado: ");
 	        int user = scanner.nextInt();
 	        scanner.nextLine(); 
+
 	        System.out.print("Introduzca contraseña: ");
-	        String employeePass = scanner.nextLine();
-	        logged = Employee.login(user, employeePass);
-		}while(!logged);
+	        String password = scanner.nextLine();
+
+	        Logable employee = new Employee(password, user); 
+	        logged = employee.login(user, password);
+
+	        if (!logged) {
+	            System.out.println("Credenciales incorrectas. Por favor, intente nuevamente.");
+	        }
+	    } while (!logged);
 	}
 	public void loadInventory() {
 		try {
@@ -270,10 +277,10 @@ public class Shop {
 		    boolean Payable = false;
 		    double points = (totalAmount.getValue() /10);
 		    int finalPoints = (int) points;
-		    Payable = PremiumClient.payP(totalAmount, clientePremium);
+		    Payable = clientePremium.pay(totalAmount);
 		    long currentTime = System.currentTimeMillis();
 		    Date fechaHoraActual = new Date(currentTime);
-			Sale sale = new Sale(namePremiumClient, productosVendidos, totalAmount, fechaHoraActual); 
+			Sale sale = new Sale(clientePremium, productosVendidos, totalAmount, fechaHoraActual); 
 		    cash.setValue(cash.getValue() + totalAmount.getValue());        
 		    System.out.println("Venta final: " + sale.toString());
 		    if(Payable == true) {		
@@ -325,10 +332,10 @@ public class Shop {
 		    totalAmount.setValue(totalAmount.getValue() * TAX_RATE);
 		    totalAmount.setValue(Math.round(totalAmount.getValue() * 100.00) / 100.00);
 		    boolean Payable = false;
-		    Payable = Client.pay(totalAmount, cliente);
+		    Payable = cliente.pay(totalAmount);
 		    long currentTime = System.currentTimeMillis();
 		    Date fechaHoraActual = new Date(currentTime);
-			Sale sale = new Sale(client, productosVendidos, totalAmount, fechaHoraActual); 
+			Sale sale = new Sale(cliente, productosVendidos, totalAmount, fechaHoraActual); 
 		    cash.setValue(cash.getValue() + totalAmount.getValue());        
 		    System.out.println("Venta final: " + sale.toString());
 		    if(Payable == true) {		

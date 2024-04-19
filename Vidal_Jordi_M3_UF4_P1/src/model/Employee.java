@@ -1,6 +1,8 @@
 package model;
 
-public class Employee extends Person{
+import main.Logable;
+
+public class Employee extends Person implements Logable{
 	
 	int employeeID;
 	final static int USER = 123;
@@ -16,17 +18,13 @@ public class Employee extends Person{
 	public String getPASSWORD() {
 		return PASSWORD;
 	}
-	
-	public static boolean login(int user, String employeePass) {
-		boolean isLogged = false;
-		if (user == USER && employeePass.equals(PASSWORD)) {
-			System.out.println("Login correcto!");
-			isLogged = true;
-		} else {
-			System.out.println("Error durante el login!");
-
-		}
-		return isLogged;
-	}
-	
+	@Override
+	public boolean login(int user, String password) {
+        boolean isLogged = false;
+        if (user == USER && password.equals(PASSWORD)) {
+            isLogged = true;
+            System.out.println("Inicio de sesión correcto!");
+        }
+        return isLogged;
+    }
 }

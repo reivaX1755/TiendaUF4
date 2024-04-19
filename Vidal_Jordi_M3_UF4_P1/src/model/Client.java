@@ -1,6 +1,8 @@
 package model;
 
-public class Client extends Person{
+import main.Payable;
+
+public class Client extends Person implements Payable{
 
 	int memberID;
 	Amount balance;
@@ -28,12 +30,14 @@ public class Client extends Person{
 	public void setBalance(Amount balance) {
 		this.balance = balance;
 	}
-	
-	public static boolean pay(Amount totalAmount, Client cliente) {
-		boolean Payable = false;
-		if(cliente.getBalance().getValue() - totalAmount.getValue() > 0) {
-			Payable = true;
-		}
-		return Payable;
-	}
+
+	@Override
+    public boolean pay(Amount amount) {
+        double finalBalance = balance.getValue() - amount.getValue();
+        boolean canPay = false;
+        if(finalBalance > 0) {
+        	canPay = true;
+        }
+        return canPay;
+    }
 }
